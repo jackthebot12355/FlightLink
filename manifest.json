@@ -1,0 +1,11 @@
+{
+  "name": "Flight Link",
+  "short_name": "Flight Link",
+  "description": "Your personal flight simulator companion.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "any"
+}
