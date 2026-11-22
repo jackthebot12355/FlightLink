@@ -1,3 +1,4 @@
+
 {
   "name": "Flight Link",
   "short_name": "Flight Link",
@@ -7,5 +8,19 @@
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
-  "orientation": "any"
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
