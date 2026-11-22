@@ -1,614 +1,333 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#07111f">
-<link rel="apple-touch-icon" href="./icon.png">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#08121d">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flight Link | Flight Operations</title>
-
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#07111b">
+<link rel="apple-touch-icon" href="./icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
 <style>
-:root {
-  --bg:#07111b;
-  --panel:#0d1b28;
-  --panel2:#102231;
-  --line:#1c3546;
-  --muted:#7890a1;
-  --text:#e8f1f5;
-  --green:#a8f06b;
-  --green2:#5cbb65;
-  --blue:#57c5e8;
-  --amber:#f2bd64;
-  --red:#ff7373;
-  --radius:15px;
-}
+:root{--bg:#07111b;--panel:#0d1b28;--panel2:#102332;--line:#1c3546;--muted:#7890a1;--text:#e8f1f5;--green:#a8f06b;--blue:#57c5e8;--amber:#f2bd64;--radius:15px}
 *{box-sizing:border-box}
-body{
-  margin:0;background:
-  radial-gradient(ellipse at 80% -20%,#18394a 0,transparent 42%),
-  linear-gradient(145deg,#07111b,#091723 55%,#07111b);
-  color:var(--text);font-family:Manrope,sans-serif;min-height:100vh;
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
+body{margin:0;background:radial-gradient(ellipse at 80% -20%,#18394a,transparent 42%),linear-gradient(145deg,#07111b,#091723 55%,#07111b);color:var(--text);font-family:Manrope,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}
 .app{display:flex;min-height:100vh}
-.sidebar{
-  width:238px;background:#091521;border-right:1px solid var(--line);
-  padding:24px 15px;display:flex;flex-direction:column;flex-shrink:0;
-}
+.sidebar{width:238px;background:#091521;border-right:1px solid var(--line);padding:24px 15px;display:flex;flex-direction:column;flex-shrink:0}
 .brand{display:flex;align-items:center;gap:11px;padding:0 10px 28px}
-.brand-mark{
-  width:39px;height:39px;border-radius:11px;background:var(--green);
-  display:grid;place-items:center;color:#07111b;font-size:22px;font-weight:900;
-}
-.brand-name{font:800 23px 'Barlow Condensed';letter-spacing:1.5px}
-.brand-name span{color:var(--green)}
-.brand-sub{font-size:9px;color:var(--muted);letter-spacing:2px}
+.brand-mark{width:39px;height:39px;border-radius:11px;background:var(--green);display:grid;place-items:center;color:#07111b;font-size:22px;font-weight:900}
+.brand-name{font:800 23px 'Barlow Condensed';letter-spacing:1.5px}.brand-name span{color:var(--green)}.brand-sub{font-size:9px;color:var(--muted);letter-spacing:2px}
 .nav-label{font-size:9px;letter-spacing:2px;color:#597184;padding:14px 12px 8px}
-.nav-btn{
-  width:100%;border:0;background:transparent;color:#9bb0bf;
-  padding:12px;border-radius:10px;text-align:left;display:flex;
-  align-items:center;gap:12px;font-size:12px;font-weight:700;margin:2px 0;
-}
+.nav-btn{width:100%;border:0;background:transparent;color:#9bb0bf;padding:12px;border-radius:10px;text-align:left;display:flex;align-items:center;gap:12px;font-size:12px;font-weight:700;margin:2px 0}
 .nav-btn:hover,.nav-btn.active{background:#142b39;color:var(--green)}
 .nav-icon{width:20px;text-align:center;font-size:17px}
-.sidebar-bottom{margin-top:auto}
-.connection{
-  border:1px solid var(--line);background:#0d1d29;padding:13px;
-  border-radius:12px;font-size:10px;color:var(--muted);
-}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px}
-.dot.off{background:var(--amber)}
+.sidebar-bottom{margin-top:auto}.connection{border:1px solid var(--line);background:#0d1d29;padding:13px;border-radius:12px;font-size:10px;color:var(--muted)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px}.dot.off{background:var(--amber)}
 .main{flex:1;min-width:0}
-.topbar{
-  height:68px;border-bottom:1px solid var(--line);display:flex;
-  justify-content:space-between;align-items:center;padding:0 30px;
-  background:#091521d9;backdrop-filter:blur(15px);position:sticky;top:0;z-index:500;
-}
-.eyebrow{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-.page-title{font:700 21px 'Barlow Condensed';letter-spacing:1px}
-.top-right{display:flex;align-items:center;gap:18px}
-.utc{font:11px 'DM Mono';color:var(--green)}
+.topbar{height:68px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 30px;background:#091521d9;backdrop-filter:blur(15px);position:sticky;top:0;z-index:500}
+.eyebrow{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}.page-title{font:700 21px 'Barlow Condensed';letter-spacing:1px}
+.top-right{display:flex;align-items:center;gap:18px}.utc{font:11px 'DM Mono';color:var(--green)}
 .status-pill{font-size:9px;letter-spacing:1px;padding:7px 10px;border:1px solid #31533b;color:var(--green);border-radius:20px}
 .content{padding:25px 30px 50px;max-width:1600px;margin:auto}
-.page{display:none;animation:appear .3s ease}
-.page.active{display:block}
+.page{display:none;animation:appear .3s ease}.page.active{display:block}
 @keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 .section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px;gap:15px}
-h1,h2,h3,p{margin-top:0}
-h1{font:700 32px 'Barlow Condensed';letter-spacing:.5px;margin-bottom:5px}
-h2{font:700 20px 'Barlow Condensed';letter-spacing:.6px;margin-bottom:5px}
-h3{font-size:12px;margin-bottom:12px}
-.sub{color:var(--muted);font-size:11px}
-.grid{display:grid;gap:14px}
-.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.card{
-  background:linear-gradient(145deg,#102332,#0b1925);
-  border:1px solid var(--line);border-radius:var(--radius);padding:18px;
-  min-width:0;box-shadow:0 12px 35px #00000012;
-}
+h1,h2,h3,p{margin-top:0}h1{font:700 32px 'Barlow Condensed';margin-bottom:5px}h2{font:700 20px 'Barlow Condensed';margin-bottom:5px}h3{font-size:12px;margin-bottom:12px}
+.sub{color:var(--muted);font-size:11px}.grid{display:grid;gap:14px}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:linear-gradient(145deg,#102332,#0b1925);border:1px solid var(--line);border-radius:var(--radius);padding:18px;min-width:0;box-shadow:0 12px 35px #00000012}
 .metric-label{font-size:9px;letter-spacing:1.7px;color:var(--muted);text-transform:uppercase}
-.metric-value{font:700 30px 'Barlow Condensed';margin:7px 0 2px}
-.metric-unit{font:10px 'DM Mono';color:var(--muted)}
+.metric-value{font:700 30px 'Barlow Condensed';margin:7px 0 2px}.metric-unit{font:10px 'DM Mono';color:var(--muted)}
 .green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
 .panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
 .tag{font-size:9px;color:var(--green);border:1px solid #31533b;padding:5px 8px;border-radius:5px;letter-spacing:1px}
 label{display:block;color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px}
-input,select{
-  width:100%;background:#071521;border:1px solid #294052;border-radius:8px;
-  color:var(--text);padding:11px 12px;outline:none;font-size:12px;
-}
-input:focus,select:focus{border-color:var(--green)}
-select option{background:#102231}
-.btn{
-  border:1px solid #365166;background:#142b3a;color:var(--text);
-  padding:10px 14px;border-radius:8px;font-size:10px;font-weight:800;
-  letter-spacing:.7px;text-transform:uppercase;
-}
-.btn:hover{border-color:var(--green);color:var(--green)}
-.btn.primary{background:var(--green);border-color:var(--green);color:#091521}
-.btn.danger{border-color:#643b40;color:#ff9292}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+input,select{width:100%;background:#071521;border:1px solid #294052;border-radius:8px;color:var(--text);padding:11px 12px;outline:none;font-size:12px}
+input:focus,select:focus{border-color:var(--green)}select option{background:#102231}
+.btn{border:1px solid #365166;background:#142b3a;color:var(--text);padding:10px 14px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.btn:hover{border-color:var(--green);color:var(--green)}.btn.primary{background:var(--green);border-color:var(--green);color:#091521}
+.btn.danger{border-color:#643b40;color:#ff9292}.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .route-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
-.airport{font:700 22px 'Barlow Condensed';color:var(--green)}
-.route-dash{flex:1;min-width:25px;border-top:1px dashed #547084}
-.plane-art{
-  min-height:180px;border-radius:12px;display:grid;place-items:center;
-  background:radial-gradient(ellipse,#183c4b 0%,#102332 48%,#0a1924 100%);
-  overflow:hidden;position:relative;
-}
-.plane-art svg{width:80%;max-height:145px;filter:drop-shadow(0 10px 14px #0008)}
+.airport{font:700 22px 'Barlow Condensed';color:var(--green)}.route-dash{flex:1;min-width:25px;border-top:1px dashed #547084}
+.plane-art{min-height:210px;border-radius:12px;display:grid;place-items:center;background:radial-gradient(ellipse,#183c4b,#102332 48%,#0a1924);overflow:hidden;position:relative;padding:12px}
+.plane-art svg{width:90%;max-height:190px;filter:drop-shadow(0 12px 14px #0009)}
 .plane-caption{position:absolute;bottom:10px;left:14px;font:10px 'DM Mono';color:#a7c0cd}
-#map{height:470px;border-radius:12px;overflow:hidden;background:#102332}
-.map-wrap{position:relative}
-.map-overlay{
-  position:absolute;z-index:400;top:12px;left:12px;background:#081722eF;
-  border:1px solid #345063;border-radius:8px;padding:10px 12px;font:10px 'DM Mono';
-}
+#map{height:470px;border-radius:12px;overflow:hidden;background:#102332}.map-wrap{position:relative}
+.map-overlay{position:absolute;z-index:400;top:12px;left:12px;background:#081722ef;border:1px solid #345063;border-radius:8px;padding:10px 12px;font:10px 'DM Mono'}
 .leaflet-container{background:#102332}
 .instrument-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.gauge{
-  min-height:180px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;background:#091722;border:1px solid var(--line);border-radius:12px;
-}
-.gauge svg{width:145px;height:100px}
-.gauge-value{font:700 25px 'Barlow Condensed';margin-top:0}
-.gauge-label{font-size:9px;letter-spacing:1.5px;color:var(--muted)}
-.bar{height:6px;background:#1a3343;border-radius:8px;overflow:hidden;margin-top:9px}
-.bar span{display:block;height:100%;background:var(--green);border-radius:8px}
-.radio-frequency{font:700 34px 'DM Mono';color:var(--green);letter-spacing:1px}
-.radio-list{display:grid;gap:8px}
+.gauge{min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#091722;border:1px solid var(--line);border-radius:12px}
+.gauge svg{width:145px;height:100px}.gauge-value{font:700 25px 'Barlow Condensed';margin-top:0}.gauge-label{font-size:9px;letter-spacing:1.5px;color:var(--muted)}
+.bar{height:6px;background:#1a3343;border-radius:8px;overflow:hidden;margin-top:9px}.bar span{display:block;height:100%;background:var(--green);border-radius:8px}
+.radio-frequency{font:700 34px 'DM Mono';color:var(--green);letter-spacing:1px}.radio-list{display:grid;gap:8px}
 .radio-row{display:flex;justify-content:space-between;align-items:center;padding:11px;background:#091722;border:1px solid var(--line);border-radius:8px;font-size:11px}
 .radio-row strong{font:12px 'DM Mono';color:var(--blue)}
 .callout{padding:13px;border-left:3px solid var(--green);background:#102b30;border-radius:0 8px 8px 0;font-size:12px;line-height:1.6}
-.waypoint-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.waypoint{padding:6px 9px;background:#183244;border:1px solid #2b4c60;border-radius:6px;font:10px 'DM Mono'}
-.aircraft-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:420px;overflow:auto;padding-right:4px}
-.aircraft-item{padding:12px;background:#091722;border:1px solid var(--line);border-radius:9px;cursor:pointer}
-.aircraft-item:hover{border-color:var(--green)}
-.aircraft-item strong{display:block;font:700 16px 'Barlow Condensed'}
-.aircraft-item span{font-size:9px;color:var(--muted)}
 .toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:11px}
 .switch{width:38px;height:21px;border-radius:20px;background:#31495a;position:relative;border:0}
 .switch:after{content:"";position:absolute;width:15px;height:15px;border-radius:50%;background:white;left:3px;top:3px;transition:.2s}
-.switch.on{background:var(--green)}
-.switch.on:after{left:20px;background:#091521}
+.switch.on{background:var(--green)}.switch.on:after{left:20px;background:#091521}
 .footer-note{font-size:9px;color:#688193;margin-top:18px;line-height:1.6}
+.aircraft-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-height:650px;overflow:auto;padding:3px}
+.aircraft-item{padding:10px;background:#091722;border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:.2s;min-width:0}
+.aircraft-item:hover{border-color:var(--blue);transform:translateY(-2px)}
+.aircraft-item.selected{border-color:var(--green);box-shadow:0 0 0 1px #a8f06b55;background:#102b30}
+.aircraft-thumb{height:100px;border-radius:7px;background:radial-gradient(ellipse,#1b3a4b,#0b1925);display:grid;place-items:center;overflow:hidden;margin-bottom:9px}
+.aircraft-thumb svg{width:90%;height:90%;filter:drop-shadow(0 5px 7px #0009)}
+.aircraft-item strong{display:block;font:700 16px 'Barlow Condensed';overflow-wrap:anywhere}
+.aircraft-item span{font-size:9px;color:var(--muted)}
 .mobile-nav{display:none}
-@media(max-width:1000px){
- .sidebar{width:195px}.content{padding:22px 18px}.grid-4{grid-template-columns:repeat(2,1fr)}
- .instrument-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:700px){
- .sidebar{display:none}.topbar{padding:0 15px;height:60px}.content{padding:18px 13px 90px}
- .grid-4,.grid-3,.grid-2{grid-template-columns:1fr 1fr}
- .aircraft-grid{grid-template-columns:1fr 1fr}
- .instrument-grid{grid-template-columns:1fr 1fr}
- .top-right .status-pill{display:none}
- .mobile-nav{
-  display:flex;position:fixed;bottom:0;left:0;right:0;z-index:1000;
-  background:#091521f5;border-top:1px solid var(--line);justify-content:space-around;
-  padding:8px 2px calc(8px + env(safe-area-inset-bottom));
- }
- .mobile-nav button{border:0;background:none;color:var(--muted);font-size:9px;display:grid;gap:4px;justify-items:center}
- .mobile-nav button.active{color:var(--green)}
- .mobile-nav b{font-size:18px}
- #map{height:390px}
- .section-head{align-items:start;flex-direction:column}
- .metric-value{font-size:26px}
-}
-@media(max-width:420px){
- .grid-4{grid-template-columns:1fr 1fr}
- .instrument-grid{grid-template-columns:1fr 1fr}
- .card{padding:13px}
-}
+@media(max-width:1000px){.sidebar{width:195px}.content{padding:22px 18px}.grid-4{grid-template-columns:repeat(2,1fr)}.instrument-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{display:none}.topbar{padding:0 15px;height:60px}.content{padding:18px 13px 90px}.grid-4,.grid-3,.grid-2{grid-template-columns:1fr 1fr}.aircraft-grid{grid-template-columns:1fr 1fr}.instrument-grid{grid-template-columns:1fr 1fr}.top-right .status-pill{display:none}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#091521f5;border-top:1px solid var(--line);justify-content:space-around;padding:8px 2px calc(8px + env(safe-area-inset-bottom))}.mobile-nav button{border:0;background:none;color:var(--muted);font-size:9px;display:grid;gap:4px;justify-items:center}.mobile-nav button.active{color:var(--green)}.mobile-nav b{font-size:18px}#map{height:390px}.section-head{align-items:start;flex-direction:column}.metric-value{font-size:26px}}
+@media(max-width:420px){.grid-4,.instrument-grid{grid-template-columns:1fr 1fr}.card{padding:13px}.aircraft-thumb{height:85px}}
 </style>
 </head>
-
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">
-    <div class="brand-mark">✈</div>
-    <div><div class="brand-name">FLIGHT <span>LINK</span></div><div class="brand-sub">FLIGHT OPERATIONS</div></div>
-  </div>
-  <div class="nav-label">FLIGHT DECK</div>
-  <button class="nav-btn active" data-page="home"><span class="nav-icon">▦</span> Overview</button>
-  <button class="nav-btn" data-page="map"><span class="nav-icon">⌖</span> Flight map</button>
-  <button class="nav-btn" data-page="instruments"><span class="nav-icon">◉</span> Instruments</button>
-  <div class="nav-label">OPERATIONS</div>
-  <button class="nav-btn" data-page="atc"><span class="nav-icon">⌁</span> ATC radio</button>
-  <button class="nav-btn" data-page="autopilot"><span class="nav-icon">⊞</span> Autopilot</button>
-  <button class="nav-btn" data-page="aircraft"><span class="nav-icon">✈</span> Aircraft hangar</button>
-  <div class="sidebar-bottom">
-    <div class="connection"><div><span class="dot" id="connectionDot"></span><strong id="connectionText">DEMO MODE</strong></div><p style="margin:8px 0 0">Flight Link is running locally. No simulator connected.</p></div>
-    <div class="footer-note">FLIGHT LINK • VERSION 2.0<br>NOT FOR REAL-WORLD NAVIGATION</div>
-  </div>
+<div class="brand"><div class="brand-mark">✈</div><div><div class="brand-name">FLIGHT <span>LINK</span></div><div class="brand-sub">FLIGHT OPERATIONS</div></div></div>
+<div class="nav-label">FLIGHT DECK</div>
+<button class="nav-btn active" data-page="home"><span class="nav-icon">▦</span>Overview</button>
+<button class="nav-btn" data-page="map"><span class="nav-icon">⌖</span>Flight map</button>
+<button class="nav-btn" data-page="instruments"><span class="nav-icon">◉</span>Instruments</button>
+<div class="nav-label">OPERATIONS</div>
+<button class="nav-btn" data-page="atc"><span class="nav-icon">⌁</span>ATC radio</button>
+<button class="nav-btn" data-page="autopilot"><span class="nav-icon">⊞</span>Autopilot</button>
+<button class="nav-btn" data-page="aircraft"><span class="nav-icon">✈</span>Aircraft hangar</button>
+<div class="sidebar-bottom"><div class="connection"><div><span class="dot" id="connectionDot"></span><strong id="connectionText">DEMO MODE</strong></div><p style="margin:8px 0 0">No simulator connected.</p></div><div class="footer-note">FLIGHT LINK • VERSION 3.0<br>NOT FOR REAL-WORLD NAVIGATION</div></div>
 </aside>
-
 <main class="main">
-<header class="topbar">
-  <div><div class="eyebrow">FLIGHT OPERATIONS / <span id="crumb">OVERVIEW</span></div><div class="page-title" id="topTitle">Flight overview</div></div>
-  <div class="top-right"><span class="utc" id="clock">UTC --:--:--</span><span class="status-pill">● SYSTEM ONLINE</span></div>
-</header>
-
+<header class="topbar"><div><div class="eyebrow">FLIGHT OPERATIONS / <span id="crumb">OVERVIEW</span></div><div class="page-title" id="topTitle">Flight overview</div></div><div class="top-right"><span class="utc" id="clock">UTC --:--:--</span><span class="status-pill">● SYSTEM ONLINE</span></div></header>
 <div class="content">
-
 <section class="page active" id="page-home">
-  <div class="section-head">
-    <div><div class="eyebrow">WELCOME TO FLIGHT LINK</div><h1>Your flight deck.</h1><div class="sub">Plan, monitor and manage your flight from one place.</div></div>
-    <button class="btn primary" onclick="startDemo()">▶ START DEMO FLIGHT</button>
-  </div>
-
-  <div class="grid grid-4" style="margin-bottom:14px">
-    <div class="card"><div class="metric-label">Indicated airspeed</div><div class="metric-value" id="homeSpeed">0 <span class="metric-unit">KTS</span></div><div class="sub">Ground / air speed demo</div></div>
-    <div class="card"><div class="metric-label">Altitude</div><div class="metric-value" id="homeAlt">0 <span class="metric-unit">FT</span></div><div class="sub">Pressure altitude demo</div></div>
-    <div class="card"><div class="metric-label">Heading</div><div class="metric-value" id="homeHeading">000°</div><div class="sub">Magnetic heading demo</div></div>
-    <div class="card"><div class="metric-label">Vertical speed</div><div class="metric-value" id="homeVsi">0 <span class="metric-unit">FPM</span></div><div class="sub">Rate of climb / descent</div></div>
-  </div>
-
-  <div class="grid grid-2">
-    <div class="card">
-      <div class="panel-title"><div><h2>FLIGHT PLAN</h2><div class="sub">Your active route details</div></div><span class="tag">PLAN</span></div>
-      <label>Aircraft</label><select id="aircraftSelect" onchange="syncAircraft()"></select>
-      <div class="grid grid-2">
-        <div><label>Callsign</label><input id="callsign" value="FLK204" maxlength="12" oninput="syncFlight()"></div>
-        <div><label>Cruise altitude (ft)</label><input id="cruise" type="number" value="35000" oninput="syncFlight()"></div>
-        <div><label>Departure</label><input id="departure" value="EGLL" maxlength="4" oninput="syncFlight()"></div>
-        <div><label>Destination</label><input id="destination" value="EDDF" maxlength="4" oninput="syncFlight()"></div>
-      </div>
-      <label>Waypoints (separate with commas)</label>
-      <input id="waypoints" placeholder="e.g. DVR, KONAN, LAM" oninput="syncFlight()">
-      <div class="route-line"><span class="airport" id="routeFrom">EGLL</span><span class="route-dash"></span><span style="color:var(--green)">✈</span><span class="route-dash"></span><span class="airport" id="routeTo">EDDF</span></div>
-      <div class="sub" id="routeSummary">EGLL → EDDF</div>
-      <div class="btn-row"><button class="btn primary" onclick="saveFlight()">SAVE FLIGHT PLAN</button><button class="btn" onclick="resetFlight()">RESET</button></div>
-    </div>
-
-    <div class="card">
-      <div class="panel-title"><div><h2>AIRCRAFT PROFILE</h2><div class="sub">Selected aircraft</div></div><span class="tag">HANGAR</span></div>
-      <div class="plane-art">
-        <svg viewBox="0 0 700 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M40 111 L295 100 L365 20 Q379 9 393 22 L370 101 L590 108 Q625 110 660 117 Q625 125 590 127 L370 133 L393 199 Q379 211 365 199 L295 143 L40 132 Q20 125 10 121 Q20 115 40 111Z" fill="#c7d9df"/>
-          <path d="M80 115 L295 108 L365 30 L378 26 L355 105 L590 114 L630 118 L590 120 L355 128 L378 194 L365 190 L295 138 L80 129Z" fill="#8da9b5"/>
-          <path d="M330 111 L365 108 L378 118 L365 127 L330 124Z" fill="#a8f06b"/>
-          <path d="M115 112 L300 108 L340 112 L300 116 L115 116Z" fill="#102d3d"/>
-          <circle cx="170" cy="115" r="3" fill="#a8f06b"/><circle cx="190" cy="115" r="3" fill="#a8f06b"/>
-        </svg>
-        <div class="plane-caption" id="planeCaption">AIRCRAFT • A320</div>
-      </div>
-      <div class="grid grid-2" style="margin-top:14px">
-        <div><div class="metric-label">Aircraft type</div><strong id="profileAircraft">Airbus A320</strong></div>
-        <div><div class="metric-label">Callsign</div><strong id="profileCallsign">FLK204</strong></div>
-      </div>
-      <div class="btn-row"><button class="btn" onclick="showPage('aircraft')">OPEN HANGAR</button><button class="btn" onclick="showPage('map')">VIEW MAP</button></div>
-    </div>
-  </div>
+<div class="section-head"><div><div class="eyebrow">WELCOME TO FLIGHT LINK</div><h1>Your flight deck.</h1><div class="sub">Plan, monitor and manage your flight from one place.</div></div><button class="btn primary" onclick="startDemo()">▶ START DEMO FLIGHT</button></div>
+<div class="grid grid-4" style="margin-bottom:14px">
+<div class="card"><div class="metric-label">Indicated airspeed</div><div class="metric-value" id="homeSpeed">0 <span class="metric-unit">KTS</span></div><div class="sub">Ground / air speed demo</div></div>
+<div class="card"><div class="metric-label">Altitude</div><div class="metric-value" id="homeAlt">0 <span class="metric-unit">FT</span></div><div class="sub">Pressure altitude demo</div></div>
+<div class="card"><div class="metric-label">Heading</div><div class="metric-value" id="homeHeading">000°</div><div class="sub">Magnetic heading demo</div></div>
+<div class="card"><div class="metric-label">Vertical speed</div><div class="metric-value" id="homeVsi">0 <span class="metric-unit">FPM</span></div><div class="sub">Rate of climb / descent</div></div>
+</div>
+<div class="grid grid-2">
+<div class="card">
+<div class="panel-title"><div><h2>FLIGHT PLAN</h2><div class="sub">Your active route details</div></div><span class="tag">PLAN</span></div>
+<label>Aircraft</label><select id="aircraftSelect" onchange="syncAircraft()"></select>
+<div class="grid grid-2">
+<div><label>Callsign</label><input id="callsign" value="FLK204" maxlength="12" oninput="syncFlight()"></div>
+<div><label>Cruise altitude (ft)</label><input id="cruise" type="number" value="35000" oninput="syncFlight()"></div>
+<div><label>Departure</label><input id="departure" value="EGLL" maxlength="4" oninput="syncFlight()"></div>
+<div><label>Destination</label><input id="destination" value="EDDF" maxlength="4" oninput="syncFlight()"></div>
+</div>
+<label>Waypoints (separate with commas)</label><input id="waypoints" placeholder="e.g. DVR, KONAN, LAM" oninput="syncFlight()">
+<div class="route-line"><span class="airport" id="routeFrom">EGLL</span><span class="route-dash"></span><span style="color:var(--green)">✈</span><span class="route-dash"></span><span class="airport" id="routeTo">EDDF</span></div>
+<div class="sub" id="routeSummary">EGLL → EDDF</div>
+<div class="btn-row"><button class="btn primary" onclick="saveFlight()">SAVE FLIGHT PLAN</button><button class="btn" onclick="resetFlight()">RESET</button></div>
+</div>
+<div class="card">
+<div class="panel-title"><div><h2>AIRCRAFT PROFILE</h2><div class="sub">Selected aircraft</div></div><span class="tag">HANGAR</span></div>
+<div class="plane-art" id="planeVisual"></div>
+<div class="grid grid-2" style="margin-top:14px">
+<div><div class="metric-label">Aircraft type</div><strong id="profileAircraft">Airbus A320</strong></div>
+<div><div class="metric-label">Callsign</div><strong id="profileCallsign">FLK204</strong></div>
+</div>
+<div class="btn-row"><button class="btn" onclick="showPage('aircraft')">OPEN HANGAR</button><button class="btn" onclick="showPage('map')">VIEW MAP</button></div>
+</div>
+</div>
 </section>
-
 <section class="page" id="page-map">
-  <div class="section-head"><div><div class="eyebrow">NAVIGATION</div><h1>Flight map</h1><div class="sub">Route overview and demo aircraft position.</div></div><span class="tag">DEMO POSITION</span></div>
-  <div class="card">
-    <div class="panel-title"><div><h2 id="mapRouteTitle">EGLL → EDDF</h2><div class="sub" id="mapRouteSub">Flight route preview</div></div><button class="btn" onclick="fitMap()">FIT ROUTE</button></div>
-    <div class="map-wrap"><div id="map"></div><div class="map-overlay"><span class="green">●</span> FLIGHT LINK DEMO<br><span id="mapCoord">Position unavailable</span></div></div>
-    <div class="grid grid-3" style="margin-top:14px">
-      <div><div class="metric-label">Aircraft</div><strong id="mapAircraft">Airbus A320</strong></div>
-      <div><div class="metric-label">Route</div><strong id="mapDistance">EGLL – EDDF</strong></div>
-      <div><div class="metric-label">Status</div><strong class="green" id="mapStatus">STANDBY</strong></div>
-    </div>
-  </div>
-</section>
-
+<div class="section-head"><div><div class="eyebrow">NAVIGATION</div><h1>Flight map</h1><div class="sub">Route overview and demo aircraft position.</div></div><span class="tag">DEMO POSITION</span></div>
+<div class="card"><div class="panel-title"><div><h2 id="mapRouteTitle">EGLL → EDDF</h2><div class="sub" id="mapRouteSub">Flight route preview</div></div><button class="btn" onclick="fitMap()">FIT ROUTE</button></div>
+<div class="map-wrap"><div id="map"></div><div class="map-overlay"><span class="green">●</span> FLIGHT LINK DEMO<br><span id="mapCoord">Position unavailable</span></div></div>
+<div class="grid grid-3" style="margin-top:14px"><div><div class="metric-label">Aircraft</div><strong id="mapAircraft">Airbus A320</strong></div><div><div class="metric-label">Route</div><strong id="mapDistance">EGLL – EDDF</strong></div><div><div class="metric-label">Status</div><strong class="green" id="mapStatus">STANDBY</strong></div></div>
+</div></section>
 <section class="page" id="page-instruments">
-  <div class="section-head"><div><div class="eyebrow">FLIGHT DATA</div><h1>Flight instruments</h1><div class="sub">Demonstration flight instruments. Not real aircraft data.</div></div><span class="tag">SIMULATED</span></div>
-  <div class="instrument-grid">
-    <div class="gauge"><svg viewBox="0 0 150 100"><path d="M18 80 A57 57 0 0 1 132 80" stroke="#254253" stroke-width="9" fill="none"/><path d="M18 80 A57 57 0 0 1 132 80" stroke="#a8f06b" stroke-width="4" fill="none" stroke-dasharray="180 180" id="speedArc"/><path d="M75 80 L75 30" stroke="#e8f1f5" stroke-width="2" id="speedNeedle" transform="rotate(-90 75 80)"/><circle cx="75" cy="80" r="5" fill="#a8f06b"/></svg><div class="gauge-value" id="gSpeed">0 KTS</div><div class="gauge-label">AIRSPEED</div></div>
-    <div class="gauge"><svg viewBox="0 0 150 100"><path d="M18 80 A57 57 0 0 1 132 80" stroke="#254253" stroke-width="9" fill="none"/><path d="M75 80 L75 30" stroke="#57c5e8" stroke-width="2" id="altNeedle" transform="rotate(-90 75 80)"/><circle cx="75" cy="80" r="5" fill="#57c5e8"/></svg><div class="gauge-value" id="gAlt">0 FT</div><div class="gauge-label">ALTITUDE</div></div>
-    <div class="gauge"><svg viewBox="0 0 150 100"><circle cx="75" cy="51" r="42" stroke="#254253" stroke-width="8" fill="none"/><path d="M75 12 L75 22 M114 51 L104 51 M75 90 L75 80 M36 51 L46 51" stroke="#7890a1" stroke-width="2"/><path d="M75 51 L75 19" stroke="#a8f06b" stroke-width="3" id="headingNeedle" transform="rotate(0 75 51)"/><circle cx="75" cy="51" r="4" fill="#a8f06b"/></svg><div class="gauge-value" id="gHeading">000°</div><div class="gauge-label">HEADING</div></div>
-    <div class="gauge"><div class="gauge-value blue" id="gVsi">0</div><div class="gauge-unit">FPM</div><div class="gauge-label">VERTICAL SPEED</div></div>
-    <div class="gauge"><div class="gauge-value" id="gFuel">100%</div><div class="gauge-label">DEMO FUEL</div><div class="bar" style="width:65%"><span id="fuelBar" style="width:100%"></span></div></div>
-    <div class="gauge"><div class="gauge-value amber" id="gProgress">0%</div><div class="gauge-label">DEMO ROUTE PROGRESS</div><div class="bar" style="width:65%"><span id="progressBar" style="width:0%"></span></div></div>
-  </div>
-</section>
-
+<div class="section-head"><div><div class="eyebrow">FLIGHT DATA</div><h1>Flight instruments</h1><div class="sub">Demonstration flight instruments. Not real aircraft data.</div></div><span class="tag">SIMULATED</span></div>
+<div class="instrument-grid">
+<div class="gauge"><svg viewBox="0 0 150 100"><path d="M18 80 A57 57 0 0 1 132 80" stroke="#254253" stroke-width="9" fill="none"/><path d="M18 80 A57 57 0 0 1 132 80" stroke="#a8f06b" stroke-width="4" fill="none" stroke-dasharray="180 180"/><path d="M75 80 L75 30" stroke="#e8f1f5" stroke-width="2" id="speedNeedle" transform="rotate(-90 75 80)"/><circle cx="75" cy="80" r="5" fill="#a8f06b"/></svg><div class="gauge-value" id="gSpeed">0 KTS</div><div class="gauge-label">AIRSPEED</div></div>
+<div class="gauge"><svg viewBox="0 0 150 100"><path d="M18 80 A57 57 0 0 1 132 80" stroke="#254253" stroke-width="9" fill="none"/><path d="M75 80 L75 30" stroke="#57c5e8" stroke-width="2" id="altNeedle" transform="rotate(-90 75 80)"/><circle cx="75" cy="80" r="5" fill="#57c5e8"/></svg><div class="gauge-value" id="gAlt">0 FT</div><div class="gauge-label">ALTITUDE</div></div>
+<div class="gauge"><svg viewBox="0 0 150 100"><circle cx="75" cy="51" r="42" stroke="#254253" stroke-width="8" fill="none"/><path d="M75 12 L75 22 M114 51 L104 51 M75 90 L75 80 M36 51 L46 51" stroke="#7890a1" stroke-width="2"/><path d="M75 51 L75 19" stroke="#a8f06b" stroke-width="3" id="headingNeedle"/><circle cx="75" cy="51" r="4" fill="#a8f06b"/></svg><div class="gauge-value" id="gHeading">000°</div><div class="gauge-label">HEADING</div></div>
+<div class="gauge"><div class="gauge-value blue" id="gVsi">0</div><div class="gauge-label">VERTICAL SPEED • FPM</div></div>
+<div class="gauge"><div class="gauge-value" id="gFuel">100%</div><div class="gauge-label">DEMO FUEL</div><div class="bar" style="width:65%"><span id="fuelBar" style="width:100%"></span></div></div>
+<div class="gauge"><div class="gauge-value amber" id="gProgress">0%</div><div class="gauge-label">DEMO ROUTE PROGRESS</div><div class="bar" style="width:65%"><span id="progressBar" style="width:0%"></span></div></div>
+</div></section>
 <section class="page" id="page-atc">
-  <div class="section-head"><div><div class="eyebrow">COMMUNICATIONS</div><h1>ATC radio</h1><div class="sub">Practice frequencies and example radio calls.</div></div><span class="tag">TRAINING MODE</span></div>
-  <div class="grid grid-2">
-    <div class="card">
-      <div class="panel-title"><div><h2>ACTIVE FREQUENCY</h2><div class="sub">Select a station below</div></div><span class="tag">COM 1</span></div>
-      <div class="radio-frequency" id="frequencyDisplay">118.700</div>
-      <div class="sub" id="stationName">Tower</div>
-      <label>Choose ATC station</label>
-      <select id="stationSelect" onchange="changeFrequency()">
-        <option value="118.700">Tower — 118.700</option>
-        <option value="121.900">Ground — 121.900</option>
-        <option value="121.700">Delivery — 121.700</option>
-        <option value="127.825">Approach — 127.825</option>
-        <option value="121.500">Emergency — 121.500</option>
-        <option value="122.800">UNICOM — 122.800</option>
-      </select>
-      <div class="btn-row"><button class="btn primary" onclick="changeFrequency()">TUNE FREQUENCY</button></div>
-      <div class="footer-note">Frequencies are examples for this training interface. Always use current official charts and simulator data.</div>
-    </div>
-    <div class="card">
-      <div class="panel-title"><div><h2>RADIO CALL GENERATOR</h2><div class="sub">Practice common calls</div></div></div>
-      <label>Call type</label>
-      <select id="callType">
-        <option value="startup">Request startup</option>
-        <option value="taxi">Request taxi</option>
-        <option value="takeoff">Ready for departure</option>
-        <option value="departure">Contact departure</option>
-        <option value="arrival">Initial approach</option>
-        <option value="landing">Ready to land</option>
-      </select>
-      <div class="callout" id="calloutText">Select a call type to generate a practice radio call.</div>
-      <div class="btn-row"><button class="btn primary" onclick="generateCall()">GENERATE CALL</button><button class="btn" onclick="copyCall()">COPY</button></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:14px">
-    <h2>FREQUENCY QUICK LIST</h2>
-    <div class="radio-list">
-      <div class="radio-row"><span>Clearance / Delivery</span><strong>121.700</strong></div>
-      <div class="radio-row"><span>Ground</span><strong>121.900</strong></div>
-      <div class="radio-row"><span>Tower</span><strong>118.700</strong></div>
-      <div class="radio-row"><span>Approach</span><strong>127.825</strong></div>
-      <div class="radio-row"><span>Emergency</span><strong>121.500</strong></div>
-    </div>
-  </div>
+<div class="section-head"><div><div class="eyebrow">COMMUNICATIONS</div><h1>ATC radio</h1><div class="sub">Practice frequencies and example radio calls.</div></div><span class="tag">TRAINING MODE</span></div>
+<div class="grid grid-2">
+<div class="card"><div class="panel-title"><div><h2>ACTIVE FREQUENCY</h2><div class="sub">Select a station below</div></div><span class="tag">COM 1</span></div><div class="radio-frequency" id="frequencyDisplay">118.700</div><div class="sub" id="stationName">Tower</div>
+<label>Choose ATC station</label><select id="stationSelect" onchange="changeFrequency()"><option value="118.700">Tower — 118.700</option><option value="121.900">Ground — 121.900</option><option value="121.700">Delivery — 121.700</option><option value="127.825">Approach — 127.825</option><option value="121.500">Emergency — 121.500</option><option value="122.800">UNICOM — 122.800</option></select>
+<div class="btn-row"><button class="btn primary" onclick="changeFrequency()">TUNE FREQUENCY</button></div><div class="footer-note">Example training frequencies only. Check current official charts.</div></div>
+<div class="card"><div class="panel-title"><div><h2>RADIO CALL GENERATOR</h2><div class="sub">Practice common calls</div></div></div>
+<label>Call type</label><select id="callType"><option value="startup">Request startup</option><option value="taxi">Request taxi</option><option value="takeoff">Ready for departure</option><option value="departure">Contact departure</option><option value="arrival">Initial approach</option><option value="landing">Ready to land</option></select>
+<div class="callout" id="calloutText">Select a call type to generate a practice radio call.</div><div class="btn-row"><button class="btn primary" onclick="generateCall()">GENERATE CALL</button><button class="btn" onclick="copyCall()">COPY</button></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h2>FREQUENCY QUICK LIST</h2><div class="radio-list"><div class="radio-row"><span>Clearance / Delivery</span><strong>121.700</strong></div><div class="radio-row"><span>Ground</span><strong>121.900</strong></div><div class="radio-row"><span>Tower</span><strong>118.700</strong></div><div class="radio-row"><span>Approach</span><strong>127.825</strong></div><div class="radio-row"><span>Emergency</span><strong>121.500</strong></div></div></div>
 </section>
-
 <section class="page" id="page-autopilot">
-  <div class="section-head"><div><div class="eyebrow">FLIGHT CONTROL</div><h1>Autopilot panel</h1><div class="sub">Demonstration controls only — these do not control a real aircraft.</div></div><span class="tag">SIMULATED</span></div>
-  <div class="grid grid-2">
-    <div class="card">
-      <div class="panel-title"><div><h2>AUTOPILOT MODES</h2><div class="sub">Toggle demonstration modes</div></div></div>
-      <div class="toggle"><span>Autopilot master</span><button class="switch" id="apMaster" onclick="toggleAP('apMaster')"></button></div>
-      <div class="toggle"><span>Heading hold</span><button class="switch" id="apHeading" onclick="toggleAP('apHeading')"></button></div>
-      <div class="toggle"><span>Altitude hold</span><button class="switch" id="apAltitude" onclick="toggleAP('apAltitude')"></button></div>
-      <div class="toggle"><span>Vertical speed</span><button class="switch" id="apVSpeed" onclick="toggleAP('apVSpeed')"></button></div>
-      <div class="toggle"><span>Navigation mode</span><button class="switch" id="apNav" onclick="toggleAP('apNav')"></button></div>
-    </div>
-    <div class="card">
-      <div class="panel-title"><div><h2>SELECTED TARGETS</h2><div class="sub">Demo target settings</div></div></div>
-      <label>Selected heading (degrees)</label><input id="targetHeading" type="number" min="0" max="359" value="090">
-      <label>Selected altitude (feet)</label><input id="targetAltitude" type="number" value="35000">
-      <label>Selected vertical speed (fpm)</label><input id="targetVSpeed" type="number" value="0">
-      <div class="btn-row"><button class="btn primary" onclick="applyTargets()">APPLY TARGETS</button><button class="btn danger" onclick="resetAP()">DISCONNECT AP</button></div>
-    </div>
-  </div>
+<div class="section-head"><div><div class="eyebrow">FLIGHT CONTROL</div><h1>Autopilot panel</h1><div class="sub">Demonstration controls only — these do not control a real aircraft.</div></div><span class="tag">SIMULATED</span></div>
+<div class="grid grid-2"><div class="card"><div class="panel-title"><div><h2>AUTOPILOT MODES</h2><div class="sub">Toggle demonstration modes</div></div></div>
+<div class="toggle"><span>Autopilot master</span><button class="switch" id="apMaster" onclick="toggleAP('apMaster')"></button></div><div class="toggle"><span>Heading hold</span><button class="switch" id="apHeading" onclick="toggleAP('apHeading')"></button></div><div class="toggle"><span>Altitude hold</span><button class="switch" id="apAltitude" onclick="toggleAP('apAltitude')"></button></div><div class="toggle"><span>Vertical speed</span><button class="switch" id="apVSpeed" onclick="toggleAP('apVSpeed')"></button></div><div class="toggle"><span>Navigation mode</span><button class="switch" id="apNav" onclick="toggleAP('apNav')"></button></div></div>
+<div class="card"><div class="panel-title"><div><h2>SELECTED TARGETS</h2><div class="sub">Demo target settings</div></div></div><label>Selected heading (degrees)</label><input id="targetHeading" type="number" min="0" max="359" value="090"><label>Selected altitude (feet)</label><input id="targetAltitude" type="number" value="35000"><label>Selected vertical speed (fpm)</label><input id="targetVSpeed" type="number" value="0"><div class="btn-row"><button class="btn primary" onclick="applyTargets()">APPLY TARGETS</button><button class="btn danger" onclick="resetAP()">DISCONNECT AP</button></div></div></div>
 </section>
-
 <section class="page" id="page-aircraft">
-  <div class="section-head"><div><div class="eyebrow">AIRCRAFT LIBRARY</div><h1>Aircraft hangar</h1><div class="sub">Choose an aircraft for your Flight Link flight plan.</div></div></div>
-  <div class="card">
-    <label>Search aircraft</label><input id="aircraftSearch" placeholder="Search Airbus, Boeing, Cessna..." oninput="renderAircraft(this.value)">
-    <div class="aircraft-grid" id="aircraftGrid" style="margin-top:14px"></div>
-  </div>
+<div class="section-head"><div><div class="eyebrow">AIRCRAFT LIBRARY</div><h1>Aircraft hangar</h1><div class="sub">Choose an aircraft. Its illustration updates across Flight Link.</div></div></div>
+<div class="card"><label>Search aircraft</label><input id="aircraftSearch" placeholder="Search Airbus, Boeing, Cessna..." oninput="renderAircraft(this.value)"><div class="aircraft-grid" id="aircraftGrid" style="margin-top:14px"></div></div>
 </section>
-
-</div>
-</main>
-</div>
-
-<nav class="mobile-nav">
-  <button class="active" data-page="home"><b>▦</b>Home</button>
-  <button data-page="map"><b>⌖</b>Map</button>
-  <button data-page="instruments"><b>◉</b>Instruments</button>
-  <button data-page="atc"><b>⌁</b>ATC</button>
-  <button data-page="autopilot"><b>⊞</b>Autopilot</button>
-  <button data-page="aircraft"><b>✈</b>Aircraft</button>
-</nav>
-
+</div></main></div>
+<nav class="mobile-nav"><button class="active" data-page="home"><b>▦</b>Home</button><button data-page="map"><b>⌖</b>Map</button><button data-page="instruments"><b>◉</b>Instruments</button><button data-page="atc"><b>⌁</b>ATC</button><button data-page="autopilot"><b>⊞</b>Autopilot</button><button data-page="aircraft"><b>✈</b>Aircraft</button></nav>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const aircraft = [
- ["Airbus A220-100","Airbus","Regional jet"],["Airbus A220-300","Airbus","Regional jet"],
- ["Airbus A300","Airbus","Widebody"],["Airbus A310","Airbus","Widebody"],
- ["Airbus A318","Airbus","Narrowbody"],["Airbus A319","Airbus","Narrowbody"],
- ["Airbus A320","Airbus","Narrowbody"],["Airbus A320neo","Airbus","Narrowbody"],
- ["Airbus A321","Airbus","Narrowbody"],["Airbus A321neo","Airbus","Narrowbody"],
- ["Airbus A330-200","Airbus","Widebody"],["Airbus A330-300","Airbus","Widebody"],
- ["Airbus A330neo","Airbus","Widebody"],["Airbus A340-300","Airbus","Widebody"],
- ["Airbus A340-600","Airbus","Widebody"],["Airbus A350-900","Airbus","Widebody"],
- ["Airbus A350-1000","Airbus","Widebody"],["Airbus A380-800","Airbus","Superjumbo"],
- ["Boeing 707","Boeing","Classic jet"],["Boeing 717","Boeing","Narrowbody"],
- ["Boeing 727","Boeing","Classic jet"],["Boeing 737-700","Boeing","Narrowbody"],
- ["Boeing 737-800","Boeing","Narrowbody"],["Boeing 737 MAX 8","Boeing","Narrowbody"],
- ["Boeing 737 MAX 9","Boeing","Narrowbody"],["Boeing 747-400","Boeing","Jumbo jet"],
- ["Boeing 747-8","Boeing","Jumbo jet"],["Boeing 757-200","Boeing","Narrowbody"],
- ["Boeing 767-300","Boeing","Widebody"],["Boeing 777-200","Boeing","Widebody"],
- ["Boeing 777-300ER","Boeing","Widebody"],["Boeing 777X","Boeing","Widebody"],
- ["Boeing 787-8","Boeing","Dreamliner"],["Boeing 787-9","Boeing","Dreamliner"],
- ["Boeing 787-10","Boeing","Dreamliner"],["Cessna 150","Cessna","Piston"],
- ["Cessna 152","Cessna","Piston"],["Cessna 172 Skyhawk","Cessna","Piston"],
- ["Cessna 182 Skylane","Cessna","Piston"],["Cessna 208 Caravan","Cessna","Turboprop"],
- ["Cessna Citation CJ4","Cessna","Business jet"],["Cessna Citation Longitude","Cessna","Business jet"],
- ["Beechcraft Bonanza","Beechcraft","Piston"],["Beechcraft King Air 350","Beechcraft","Turboprop"],
- ["Bombardier CRJ700","Bombardier","Regional jet"],["Bombardier CRJ900","Bombardier","Regional jet"],
- ["Embraer E170","Embraer","Regional jet"],["Embraer E175","Embraer","Regional jet"],
- ["Embraer E190","Embraer","Regional jet"],["Embraer E195-E2","Embraer","Regional jet"],
- ["ATR 42","ATR","Turboprop"],["ATR 72","ATR","Turboprop"],
- ["Concorde","Aérospatiale","Supersonic"],["Fokker 100","Fokker","Regional jet"],
- ["Pilatus PC-12","Pilatus","Turboprop"],["Pilatus PC-24","Pilatus","Business jet"],
- ["Piper PA-28","Piper","Piston"],["Piper PA-46","Piper","Piston"],
- ["Cirrus SR20","Cirrus","Piston"],["Cirrus SR22","Cirrus","Piston"],
- ["Gulfstream G650","Gulfstream","Business jet"],["Gulfstream G700","Gulfstream","Business jet"],
- ["Dassault Falcon 7X","Dassault","Business jet"],["Dassault Falcon 8X","Dassault","Business jet"],
- ["Lockheed C-130 Hercules","Lockheed","Military transport"],["Lockheed L-1011 TriStar","Lockheed","Widebody"],
- ["McDonnell Douglas MD-11","McDonnell Douglas","Widebody"],["McDonnell Douglas MD-80","McDonnell Douglas","Narrowbody"],
- ["Antonov An-124","Antonov","Cargo"],["Antonov An-225","Antonov","Cargo"],
- ["Tupolev Tu-154","Tupolev","Jet"],["Ilyushin Il-76","Ilyushin","Cargo"]
+const aircraft=[
+["Airbus A220-100","Airbus","Regional jet"],["Airbus A220-300","Airbus","Regional jet"],["Airbus A300","Airbus","Widebody"],["Airbus A310","Airbus","Widebody"],["Airbus A318","Airbus","Narrowbody"],["Airbus A319","Airbus","Narrowbody"],["Airbus A320","Airbus","Narrowbody"],["Airbus A320neo","Airbus","Narrowbody"],["Airbus A321","Airbus","Narrowbody"],["Airbus A321neo","Airbus","Narrowbody"],["Airbus A330-200","Airbus","Widebody"],["Airbus A330-300","Airbus","Widebody"],["Airbus A330neo","Airbus","Widebody"],["Airbus A340-300","Airbus","Widebody"],["Airbus A340-600","Airbus","Widebody"],["Airbus A350-900","Airbus","Widebody"],["Airbus A350-1000","Airbus","Widebody"],["Airbus A380-800","Airbus","Superjumbo"],["Boeing 707","Boeing","Classic jet"],["Boeing 717","Boeing","Narrowbody"],["Boeing 727","Boeing","Classic jet"],["Boeing 737-700","Boeing","Narrowbody"],["Boeing 737-800","Boeing","Narrowbody"],["Boeing 737 MAX 8","Boeing","Narrowbody"],["Boeing 737 MAX 9","Boeing","Narrowbody"],["Boeing 747-400","Boeing","Jumbo jet"],["Boeing 747-8","Boeing","Jumbo jet"],["Boeing 757-200","Boeing","Narrowbody"],["Boeing 767-300","Boeing","Widebody"],["Boeing 777-200","Boeing","Widebody"],["Boeing 777-300ER","Boeing","Widebody"],["Boeing 777X","Boeing","Widebody"],["Boeing 787-8","Boeing","Dreamliner"],["Boeing 787-9","Boeing","Dreamliner"],["Boeing 787-10","Boeing","Dreamliner"],["Cessna 150","Cessna","Piston"],["Cessna 152","Cessna","Piston"],["Cessna 172 Skyhawk","Cessna","Piston"],["Cessna 182 Skylane","Cessna","Piston"],["Cessna 208 Caravan","Cessna","Turboprop"],["Cessna Citation CJ4","Cessna","Business jet"],["Cessna Citation Longitude","Cessna","Business jet"],["Beechcraft Bonanza","Beechcraft","Piston"],["Beechcraft King Air 350","Beechcraft","Turboprop"],["Bombardier CRJ700","Bombardier","Regional jet"],["Bombardier CRJ900","Bombardier","Regional jet"],["Embraer E170","Embraer","Regional jet"],["Embraer E175","Embraer","Regional jet"],["Embraer E190","Embraer","Regional jet"],["Embraer E195-E2","Embraer","Regional jet"],["ATR 42","ATR","Turboprop"],["ATR 72","ATR","Turboprop"],["Concorde","Aérospatiale","Supersonic"],["Fokker 100","Fokker","Regional jet"],["Pilatus PC-12","Pilatus","Turboprop"],["Pilatus PC-24","Pilatus","Business jet"],["Piper PA-28","Piper","Piston"],["Piper PA-46","Piper","Piston"],["Cirrus SR20","Cirrus","Piston"],["Cirrus SR22","Cirrus","Piston"],["Gulfstream G650","Gulfstream","Business jet"],["Gulfstream G700","Gulfstream","Business jet"],["Dassault Falcon 7X","Dassault","Business jet"],["Dassault Falcon 8X","Dassault","Business jet"],["Lockheed C-130 Hercules","Lockheed","Military transport"],["Lockheed L-1011 TriStar","Lockheed","Widebody"],["McDonnell Douglas MD-11","McDonnell Douglas","Widebody"],["McDonnell Douglas MD-80","McDonnell Douglas","Narrowbody"],["Antonov An-124","Antonov","Cargo"],["Antonov An-225","Antonov","Cargo"],["Tupolev Tu-154","Tupolev","Jet"],["Ilyushin Il-76","Ilyushin","Cargo"]
 ];
-
 let flight={speed:0,alt:0,heading:90,vsi:0,progress:0,fuel:100,running:false};
 let ap={apMaster:false,apHeading:false,apAltitude:false,apVSpeed:false,apNav:false};
-let map,routeLine,planeMarker,routeCoords=[];
-let mapReady=false;
-let timer=null;
-
+let map,routeLine,planeMarker,routeCoords=[],mapReady=false,timer=null;
 function $(id){return document.getElementById(id)}
 function selectedAircraft(){return $("aircraftSelect").value||"Airbus A320"}
 
-function populateAircraft(){
-  $("aircraftSelect").innerHTML=aircraft.map(a=>`<option value="${a[0]}">${a[0]}</option>`).join("");
-  $("aircraftSelect").value="Airbus A320";
-  renderAircraft();
+/* Each aircraft receives a distinct top-down 3D-style vector illustration.
+   Wingspan, fuselage, tail and engine count vary by aircraft family. */
+function aircraftShape(name){
+ const n=name.toLowerCase();
+ let wide=/a380|747|an-124|an-225|il-76|c-130|a340|a330|a350|777|767|787|md-11|l-1011/.test(n);
+ let small=/cessna|piper|cirrus|pc-12|bonanza|king air|atr 42|atr 72/.test(n);
+ let prop=/cessna|piper|cirrus|pc-12|bonanza|king air|atr 42|atr 72|c-130/.test(n);
+ let jumbo=/a380|747|an-225/.test(n);
+ let supersonic=/concorde/.test(n);
+ let engines=prop?2:(/a380|747|an-124|an-225|il-76|a340|a330|a350|777|767|787|md-11|l-1011/.test(n)?4:2);
+ if(/a340|747|an-225|an-124|il-76|a380/.test(n))engines=4;
+ if(/md-11/.test(n))engines=3;
+ if(/a380/.test(n))engines=4;
+ let wing=small?95:wide?190:jumbo?210:150;
+ let body=small?13:wide?18:jumbo?23:16;
+ let tail=small?25:wide?37:jumbo?43:32;
+ let engineY=engines===4?[-35,-20,20,35]:engines===3?[-30,0,30]:[-25,25];
+ let engineMarkup=engineY.map(y=>`<g transform="translate(${y} 5)"><ellipse cx="0" cy="0" rx="${prop?5:7}" ry="${prop?9:13}" fill="url(#metal)" stroke="#8ba8bd" stroke-width="1"/><ellipse cx="0" cy="0" rx="${prop?2:3}" ry="${prop?6:9}" fill="#142d40"/><path d="M-3 -3 Q0 -9 3 -3" stroke="#b9d5e5" stroke-width="1" fill="none"/></g>`).join("");
+ let wingPath=small
+ ?`M-7 -9 L-${wing/2} -27 L-${wing/2+5} -20 L-12 3 L-10 30 L-5 25 L0 10 L5 25 L10 30 L12 3 L${wing/2+5} -20 L${wing/2} -27 L7 -9Z`
+ :`M-8 -12 L-${wing/2} -42 L-${wing/2+9} -31 L-17 10 L-13 48 L-5 41 L0 16 L5 41 L13 48 L17 10 L${wing/2+9} -31 L${wing/2} -42 L8 -12Z`;
+ let tailPath=`M-6 53 L-${tail} 76 L-${tail+4} 70 L-11 45 L11 45 L${tail+4} 70 L${tail} 76 L6 53Z`;
+ let bodyPath=`M0 -92 Q7 -83 7 -59 L8 32 L15 59 L10 70 L0 61 L-10 70 L-15 59 L-8 32 L-7 -59 Q-7 -83 0 -92Z`;
+ if(supersonic)wingPath=`M-7 -15 L-72 -50 L-62 -30 L-18 38 L-12 54 L0 68 L12 54 L18 38 L62 -30 L72 -50 L7 -15Z`;
+ return `<svg viewBox="-125 -105 250 205" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name} top view">
+ <defs><linearGradient id="metal" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f7fbff"/><stop offset=".48" stop-color="#91b0c4"/><stop offset="1" stop-color="#45647b"/></linearGradient><linearGradient id="wing" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f6fbff"/><stop offset=".45" stop-color="#b5cad8"/><stop offset="1" stop-color="#54758c"/></linearGradient></defs>
+ <ellipse cx="0" cy="8" rx="${wing/2+15}" ry="78" fill="#000" opacity=".18"/>
+ <path d="${wingPath}" fill="url(#wing)" stroke="#d8e9f3" stroke-width="1.5"/>
+ <path d="M-7 -8 L-${wing/2-7} -30 L-18 11 L-11 37 L0 15Z" fill="#ffffff" opacity=".18"/>
+ <path d="${tailPath}" fill="url(#wing)" stroke="#d8e9f3" stroke-width="1.3"/>
+ <path d="${bodyPath}" fill="url(#metal)" stroke="#e6f5ff" stroke-width="1.3"/>
+ <path d="M-4 -72 Q0 -87 4 -72 L4 44 L0 58 L-4 44Z" fill="#fff" opacity=".35"/>
+ <path d="M-6 -62 L6 -62 L5 -48 L-5 -48Z" fill="#17374d"/>
+ <path d="M-5 -44 L5 -44 L5 -37 L-5 -37Z" fill="#24475c"/>
+ ${engineMarkup}
+ <path d="M-8 58 L0 67 L8 58" fill="#57c5e8" stroke="#dcecf5" stroke-width="1"/>
+ <path d="M-2 -80 L0 -90 L2 -80" fill="#fff"/>
+ </svg>`;
 }
 function syncAircraft(){
-  $("profileAircraft").textContent=selectedAircraft();
-  $("planeCaption").textContent="AIRCRAFT • "+selectedAircraft().toUpperCase();
-  $("mapAircraft").textContent=selectedAircraft();
+ const name=selectedAircraft();
+ $("profileAircraft").textContent=name;
+ $("planeCaption")?.remove();
+ $("planeVisual").innerHTML=aircraftShape(name)+'<div class="plane-caption">AIRCRAFT • '+name.toUpperCase()+'</div>';
+ $("mapAircraft").textContent=name;
+ renderAircraft($("aircraftSearch")?.value||"");
+}
+function populateAircraft(){
+ $("aircraftSelect").innerHTML=aircraft.map(a=>`<option value="${a[0]}">${a[0]}</option>`).join("");
+ $("aircraftSelect").value="Airbus A320";
+ renderAircraft();
 }
 function syncFlight(){
-  let from=($("departure").value||"----").toUpperCase();
-  let to=($("destination").value||"----").toUpperCase();
-  $("departure").value=from;$("destination").value=to;
-  $("routeFrom").textContent=from;$("routeTo").textContent=to;
-  $("profileCallsign").textContent=$("callsign").value||"—";
-  $("routeSummary").textContent=[from,...$("waypoints").value.split(",").map(x=>x.trim().toUpperCase()).filter(Boolean),to].join(" → ");
-  $("mapRouteTitle").textContent=from+" → "+to;
-  $("mapRouteSub").textContent=$("callsign").value+" • "+selectedAircraft();
-  $("mapDistance").textContent=from+" – "+to;
-  if(mapReady)updateRoute();
+ let from=($("departure").value||"----").toUpperCase(),to=($("destination").value||"----").toUpperCase();
+ $("departure").value=from;$("destination").value=to;
+ $("routeFrom").textContent=from;$("routeTo").textContent=to;
+ $("profileCallsign").textContent=$("callsign").value||"—";
+ $("routeSummary").textContent=[from,...$("waypoints").value.split(",").map(x=>x.trim().toUpperCase()).filter(Boolean),to].join(" → ");
+ $("mapRouteTitle").textContent=from+" → "+to;$("mapRouteSub").textContent=$("callsign").value+" • "+selectedAircraft();$("mapDistance").textContent=from+" – "+to;
+ if(mapReady)updateRoute();
 }
 function saveFlight(){
-  const data={aircraft:selectedAircraft(),callsign:$("callsign").value,departure:$("departure").value,destination:$("destination").value,waypoints:$("waypoints").value,cruise:$("cruise").value};
-  localStorage.setItem("flightlink-plan",JSON.stringify(data));
-  alert("Flight plan saved on this device.");
+ const data={aircraft:selectedAircraft(),callsign:$("callsign").value,departure:$("departure").value,destination:$("destination").value,waypoints:$("waypoints").value,cruise:$("cruise").value};
+ localStorage.setItem("flightlink-plan",JSON.stringify(data));alert("Flight plan saved on this device.");
 }
 function loadFlight(){
-  try{
-    const d=JSON.parse(localStorage.getItem("flightlink-plan"));
-    if(!d)return;
-    for(const id of ["callsign","departure","destination","waypoints","cruise"])if(d[id]!=null)$(id).value=d[id];
-    if(d.aircraft)$("aircraftSelect").value=d.aircraft;
-  }catch(e){}
+ try{const d=JSON.parse(localStorage.getItem("flightlink-plan"));if(!d)return;
+ for(const id of ["callsign","departure","destination","waypoints","cruise"])if(d[id]!=null)$(id).value=d[id];
+ if(d.aircraft)$("aircraftSelect").value=d.aircraft;
+ }catch(e){}
 }
 function resetFlight(){
-  $("callsign").value="FLK204";$("departure").value="EGLL";$("destination").value="EDDF";
-  $("waypoints").value="";$("cruise").value="35000";syncFlight();
+ $("callsign").value="FLK204";$("departure").value="EGLL";$("destination").value="EDDF";$("waypoints").value="";$("cruise").value="35000";syncFlight();
 }
 function showPage(name){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  $("page-"+name).classList.add("active");
-  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
-  const titles={home:"Flight overview",map:"Flight map",instruments:"Flight instruments",atc:"ATC radio",autopilot:"Autopilot panel",aircraft:"Aircraft hangar"};
-  $("topTitle").textContent=titles[name];$("crumb").textContent=name.toUpperCase();
-  if(name==="map")setTimeout(()=>{initMap();if(map)map.invalidateSize()},100);
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$("page-"+name).classList.add("active");
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ const titles={home:"Flight overview",map:"Flight map",instruments:"Flight instruments",atc:"ATC radio",autopilot:"Autopilot panel",aircraft:"Aircraft hangar"};
+ $("topTitle").textContent=titles[name];$("crumb").textContent=name.toUpperCase();
+ if(name==="map")setTimeout(()=>{initMap();if(map)map.invalidateSize()},100);
 }
 document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
-
 function initMap(){
-  if(mapReady||!window.L)return;
-  map=L.map("map",{zoomControl:true}).setView([51.47,-0.45],5);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
-  mapReady=true;updateRoute();
+ if(mapReady||!window.L)return;
+ map=L.map("map").setView([51.47,-.45],5);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+ mapReady=true;updateRoute();
 }
-const airports={
- EGLL:[51.47,-0.4543],EDDF:[50.0379,8.5622],EGKK:[51.1537,-0.1821],
- EHAM:[52.3086,4.7639],LFPG:[49.0097,2.5479],KJFK:[40.6413,-73.7781],
- KLAX:[33.9416,-118.4085],KSFO:[37.6213,-122.379],OMDB:[25.2532,55.3657],
- WSSS:[1.3644,103.9915],YSSY:[-33.9399,151.1753],RJTT:[35.5494,139.7798],
- EIDW:[53.4213,-6.2701],LEMD:[40.4983,-3.5676],LIRF:[41.8003,12.2389],
- KORD:[41.9742,-87.9073],CYYZ:[43.6777,-79.6248],EGPH:[55.95,-3.3725],
- EGCC:[53.3537,-2.275],EGNX:[52.8311,-1.3281],EDDM:[48.3538,11.7861]
-};
-function airportCoord(code,index){
-  if(airports[code])return airports[code];
-  const seed=[...code].reduce((a,c)=>a+c.charCodeAt(0),0);
-  return [35+((seed*7)%250)/10-12, -5+((seed*13)%500)/10-25];
-}
+const airports={EGLL:[51.47,-.4543],EDDF:[50.0379,8.5622],EGKK:[51.1537,-.1821],EHAM:[52.3086,4.7639],LFPG:[49.0097,2.5479],KJFK:[40.6413,-73.7781],KLAX:[33.9416,-118.4085],KSFO:[37.6213,-122.379],OMDB:[25.2532,55.3657],WSSS:[1.3644,103.9915],YSSY:[-33.9399,151.1753],RJTT:[35.5494,139.7798],EIDW:[53.4213,-6.2701],LEMD:[40.4983,-3.5676],LIRF:[41.8003,12.2389],KORD:[41.9742,-87.9073],CYYZ:[43.6777,-79.6248],EGPH:[55.95,-3.3725],EGCC:[53.3537,-2.275],EGNX:[52.8311,-1.3281],EDDM:[48.3538,11.7861]};
+function airportCoord(code){if(airports[code])return airports[code];let seed=[...code].reduce((a,c)=>a+c.charCodeAt(0),0);return [35+((seed*7)%250)/10-12,-5+((seed*13)%500)/10-25]}
 function updateRoute(){
-  if(!mapReady)return;
-  const from=$("departure").value.toUpperCase(),to=$("destination").value.toUpperCase();
-  const codes=[from,...$("waypoints").value.split(",").map(x=>x.trim().toUpperCase()).filter(Boolean),to];
-  routeCoords=codes.map((c,i)=>airportCoord(c,i));
-  if(routeLine)map.removeLayer(routeLine);
-  routeLine=L.polyline(routeCoords,{color:"#a8f06b",weight:3,dashArray:"8 9"}).addTo(map);
-  if(!planeMarker)planeMarker=L.circleMarker(routeCoords[0],{radius:8,color:"#07111b",weight:3,fillColor:"#a8f06b",fillOpacity:1}).addTo(map);
-  else planeMarker.setLatLng(routeCoords[0]);
-  map.fitBounds(routeLine.getBounds(),{padding:[35,35]});
-  $("mapCoord").textContent=routeCoords[0].map(n=>n.toFixed(3)).join(", ");
+ if(!mapReady)return;
+ let codes=[$("departure").value,...$("waypoints").value.split(",").map(x=>x.trim().toUpperCase()).filter(Boolean),$("destination").value];
+ routeCoords=codes.map(airportCoord);if(routeLine)map.removeLayer(routeLine);
+ routeLine=L.polyline(routeCoords,{color:"#a8f06b",weight:3,dashArray:"8 9"}).addTo(map);
+ if(!planeMarker)planeMarker=L.circleMarker(routeCoords[0],{radius:8,color:"#07111b",weight:3,fillColor:"#a8f06b",fillOpacity:1}).addTo(map);else planeMarker.setLatLng(routeCoords[0]);
+ map.fitBounds(routeLine.getBounds(),{padding:[35,35]});$("mapCoord").textContent=routeCoords[0].map(n=>n.toFixed(3)).join(", ");
 }
 function fitMap(){if(mapReady&&routeLine)map.fitBounds(routeLine.getBounds(),{padding:[35,35]})}
-
 function startDemo(){
-  if(flight.running){flight.running=false;clearInterval(timer);timer=null;$("mapStatus").textContent="PAUSED";return}
-  flight.running=true;$("mapStatus").textContent="DEMO RUNNING";
-  $("connectionText").textContent="DEMO FLIGHT ACTIVE";
-  $("connectionDot").classList.remove("off");
-  if(!mapReady)initMap();
-  if(!timer)timer=setInterval(()=>{
-    flight.progress=Math.min(100,flight.progress+.12);
-    flight.speed=220+Math.round(Math.sin(flight.progress/10)*35);
-    flight.alt=Math.round(12000+23000*Math.min(1,flight.progress/35));
-    flight.heading=(90+Math.round(Math.sin(flight.progress/12)*15)+360)%360;
-    flight.vsi=flight.progress<35?900:0;
-    flight.fuel=Math.max(0,100-flight.progress*.35);
-    updateDisplays();
-    if(mapReady&&routeCoords.length>1){
-      const p=flight.progress/100*(routeCoords.length-1);
-      const i=Math.min(routeCoords.length-2,Math.floor(p));
-      const t=p-i;
-      const pos=[routeCoords[i][0]+(routeCoords[i+1][0]-routeCoords[i][0])*t,routeCoords[i][1]+(routeCoords[i+1][1]-routeCoords[i][1])*t];
-      planeMarker.setLatLng(pos);$("mapCoord").textContent=pos.map(n=>n.toFixed(3)).join(", ");
-    }
-    if(flight.progress>=100){flight.running=false;clearInterval(timer);timer=null;$("mapStatus").textContent="DEMO COMPLETE"}
-  },1000);
+ if(flight.running){flight.running=false;clearInterval(timer);timer=null;$("mapStatus").textContent="PAUSED";return}
+ flight.running=true;$("mapStatus").textContent="DEMO RUNNING";$("connectionText").textContent="DEMO FLIGHT ACTIVE";
+ if(!mapReady)initMap();
+ if(!timer)timer=setInterval(()=>{
+ flight.progress=Math.min(100,flight.progress+.12);flight.speed=220+Math.round(Math.sin(flight.progress/10)*35);
+ flight.alt=Math.round(12000+23000*Math.min(1,flight.progress/35));flight.heading=(90+Math.round(Math.sin(flight.progress/12)*15)+360)%360;
+ flight.vsi=flight.progress<35?900:0;flight.fuel=Math.max(0,100-flight.progress*.35);updateDisplays();
+ if(mapReady&&routeCoords.length>1){let p=flight.progress/100*(routeCoords.length-1),i=Math.min(routeCoords.length-2,Math.floor(p)),t=p-i;
+ let pos=[routeCoords[i][0]+(routeCoords[i+1][0]-routeCoords[i][0])*t,routeCoords[i][1]+(routeCoords[i+1][1]-routeCoords[i][1])*t];
+ planeMarker.setLatLng(pos);$("mapCoord").textContent=pos.map(n=>n.toFixed(3)).join(", ")}
+ if(flight.progress>=100){flight.running=false;clearInterval(timer);timer=null;$("mapStatus").textContent="DEMO COMPLETE"}
+ },1000);
 }
 function updateDisplays(){
-  $("homeSpeed").innerHTML=flight.speed+' <span class="metric-unit">KTS</span>';
-  $("homeAlt").innerHTML=flight.alt.toLocaleString()+' <span class="metric-unit">FT</span>';
-  $("homeHeading").textContent=String(flight.heading).padStart(3,"0")+"°";
-  $("homeVsi").innerHTML=flight.vsi+' <span class="metric-unit">FPM</span>';
-  $("gSpeed").textContent=flight.speed+" KTS";$("gAlt").textContent=flight.alt.toLocaleString()+" FT";
-  $("gHeading").textContent=String(flight.heading).padStart(3,"0")+"°";$("gVsi").textContent=flight.vsi;
-  $("gFuel").textContent=Math.round(flight.fuel)+"%";$("fuelBar").style.width=flight.fuel+"%";
-  $("gProgress").textContent=Math.round(flight.progress)+"%";$("progressBar").style.width=flight.progress+"%";
-  $("speedNeedle").setAttribute("transform",`rotate(${Math.min(180,flight.speed/400*180)-90} 75 80)`);
-  $("altNeedle").setAttribute("transform",`rotate(${Math.min(180,flight.alt/45000*180)-90} 75 80)`);
-  $("headingNeedle").setAttribute("transform",`rotate(${flight.heading} 75 51)`);
+ $("homeSpeed").innerHTML=flight.speed+' <span class="metric-unit">KTS</span>';$("homeAlt").innerHTML=flight.alt.toLocaleString()+' <span class="metric-unit">FT</span>';
+ $("homeHeading").textContent=String(flight.heading).padStart(3,"0")+"°";$("homeVsi").innerHTML=flight.vsi+' <span class="metric-unit">FPM</span>';
+ $("gSpeed").textContent=flight.speed+" KTS";$("gAlt").textContent=flight.alt.toLocaleString()+" FT";$("gHeading").textContent=String(flight.heading).padStart(3,"0")+"°";$("gVsi").textContent=flight.vsi;
+ $("gFuel").textContent=Math.round(flight.fuel)+"%";$("fuelBar").style.width=flight.fuel+"%";$("gProgress").textContent=Math.round(flight.progress)+"%";$("progressBar").style.width=flight.progress+"%";
+ $("speedNeedle").setAttribute("transform",`rotate(${Math.min(180,flight.speed/400*180)-90} 75 80)`);
+ $("altNeedle").setAttribute("transform",`rotate(${Math.min(180,flight.alt/45000*180)-90} 75 80)`);$("headingNeedle").setAttribute("transform",`rotate(${flight.heading} 75 51)`);
 }
-
-function changeFrequency(){
-  const s=$("stationSelect");
-  $("frequencyDisplay").textContent=s.value;
-  $("stationName").textContent=s.options[s.selectedIndex].text.split(" — ")[0];
-}
+function changeFrequency(){let s=$("stationSelect");$("frequencyDisplay").textContent=s.value;$("stationName").textContent=s.options[s.selectedIndex].text.split(" — ")[0]}
 function generateCall(){
-  const callsign=$("callsign").value||"Flight Link";
-  const from=$("departure").value||"departure";
-  const to=$("destination").value||"destination";
-  const calls={
-    startup:`${from} Ground, ${callsign}, request startup.`,
-    taxi:`${from} Ground, ${callsign}, request taxi to the runway.`,
-    takeoff:`${from} Tower, ${callsign}, ready for departure.`,
-    departure:`${from} Departure, ${callsign}, passing 3,000 feet, climbing.`,
-    arrival:`${to} Approach, ${callsign}, inbound from ${from}, request approach.`,
-    landing:`${to} Tower, ${callsign}, established on final, ready to land.`
-  };
-  $("calloutText").textContent=calls[$("callType").value];
+ let callsign=$("callsign").value||"Flight Link",from=$("departure").value||"departure",to=$("destination").value||"destination";
+ let calls={startup:`${from} Ground, ${callsign}, request startup.`,taxi:`${from} Ground, ${callsign}, request taxi to the runway.`,takeoff:`${from} Tower, ${callsign}, ready for departure.`,departure:`${from} Departure, ${callsign}, passing 3,000 feet, climbing.`,arrival:`${to} Approach, ${callsign}, inbound from ${from}, request approach.`,landing:`${to} Tower, ${callsign}, established on final, ready to land.`};
+ $("calloutText").textContent=calls[$("callType").value];
 }
-function copyCall(){
-  navigator.clipboard?.writeText($("calloutText").textContent).then(()=>alert("Call copied.")).catch(()=>alert("Select and copy the callout text."));
-}
-function toggleAP(id){
-  ap[id]=!ap[id];$(id).classList.toggle("on",ap[id]);
-  if(id==="apMaster"&&!ap.apMaster){
-    for(const k of Object.keys(ap))if(k!=="apMaster"){ap[k]=false;$(k).classList.remove("on")}
-  }
-}
-function applyTargets(){
-  if(!ap.apMaster){alert("Switch on autopilot master first.");return}
-  flight.heading=Number($("targetHeading").value)||0;
-  flight.alt=Number($("targetAltitude").value)||0;
-  flight.vsi=Number($("targetVSpeed").value)||0;
-  updateDisplays();alert("Demo targets applied.");
-}
-function resetAP(){
-  for(const k of Object.keys(ap)){ap[k]=false;$(k).classList.remove("on")}
-}
+function copyCall(){navigator.clipboard?.writeText($("calloutText").textContent).then(()=>alert("Call copied.")).catch(()=>alert("Select and copy the callout text."))}
+function toggleAP(id){ap[id]=!ap[id];$(id).classList.toggle("on",ap[id]);if(id==="apMaster"&&!ap.apMaster){for(const k of Object.keys(ap))if(k!=="apMaster"){ap[k]=false;$(k).classList.remove("on")}}}
+function applyTargets(){if(!ap.apMaster){alert("Switch on autopilot master first.");return}flight.heading=Number($("targetHeading").value)||0;flight.alt=Number($("targetAltitude").value)||0;flight.vsi=Number($("targetVSpeed").value)||0;updateDisplays();alert("Demo targets applied.")}
+function resetAP(){for(const k of Object.keys(ap)){ap[k]=false;$(k).classList.remove("on")}}
 function renderAircraft(filter=""){
-  const f=filter.toLowerCase();
-  $("aircraftGrid").innerHTML=aircraft.filter(a=>a.join(" ").toLowerCase().includes(f)).map(a=>
-    `<div class="aircraft-item" onclick="chooseAircraft('${a[0].replace(/'/g,"\\'")}')"><strong>${a[0]}</strong><span>${a[1]} • ${a[2]}</span></div>`
-  ).join("");
+ let f=filter.toLowerCase();
+ $("aircraftGrid").innerHTML=aircraft.filter(a=>a.join(" ").toLowerCase().includes(f)).map(a=>{
+ let safe=a[0].replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+ return `<div class="aircraft-item ${selectedAircraft()===a[0]?"selected":""}" onclick="chooseAircraft('${safe}')"><div class="aircraft-thumb">${aircraftShape(a[0])}</div><strong>${a[0]}</strong><span>${a[1]} • ${a[2]}</span></div>`;
+ }).join("");
 }
-function chooseAircraft(name){
-  $("aircraftSelect").value=name;syncAircraft();showPage("home");
-}
-
-function updateClock(){
-  $("clock").textContent="UTC "+new Date().toISOString().slice(11,19);
-}
+function chooseAircraft(name){$("aircraftSelect").value=name;syncAircraft();syncFlight();showPage("home")}
+function updateClock(){$("clock").textContent="UTC "+new Date().toISOString().slice(11,19)}
 populateAircraft();loadFlight();syncAircraft();syncFlight();updateDisplays();updateClock();setInterval(updateClock,1000);
 </script>
 </body>
