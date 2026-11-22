@@ -166,7 +166,7 @@ body:not(.authenticated) .app,body:not(.authenticated) .mobile-nav{display:none!
 <label>Waypoints (separate with commas)</label><input id="waypoints" placeholder="e.g. DVR, KONAN, LAM" oninput="syncFlight()">
 <div class="route-line"><span class="airport" id="routeFrom">EGLL</span><span class="route-dash"></span><span style="color:var(--green)">✈</span><span class="route-dash"></span><span class="airport" id="routeTo">EDDF</span></div>
 <div class="sub" id="routeSummary">EGLL → EDDF</div>
-<div class="btn-row"><button class="btn primary" onclick="saveFlight()">SAVE FLIGHT PLAN</button><button class="btn" onclick="resetFlight()">RESET</button></div>
+<div class="btn-row"><button class="btn primary" onclick="saveFlight()">SAVE FLIGHT PLAN</button><button class="btn" onclick="resetFlight()">RESET</button><button class="btn" onclick="loadSavedFlights()">MY SAVED FLIGHTS</button></div><div id="savedFlights" style="margin-top:14px"></div>
 </div>
 <div class="card">
 <div class="panel-title"><div><h2>AIRCRAFT PROFILE</h2><div class="sub">Selected aircraft</div></div><span class="tag">HANGAR</span></div>
@@ -226,6 +226,7 @@ body:not(.authenticated) .app,body:not(.authenticated) .mobile-nav{display:none!
   const SUPABASE_URL = "https://wmogxnnecutxdvadqprh.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_X-0spQD03hN5-p3fOn0mqQ_kGubfv62";
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  window.flightLinkSupabase = client;
   const $auth = (id) => document.getElementById(id);
   let authMode = "signin";
 
