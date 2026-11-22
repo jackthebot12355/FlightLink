@@ -361,6 +361,44 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
+   
+<div id="installBox" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:99999; background:#10243a; color:white; padding:16px 20px; border:1px solid #31516f; border-radius:16px; width:calc(100% - 40px); max-width:380px; text-align:center; box-shadow:0 8px 30px #0008; font-family:Arial,sans-serif;">
+  <strong style="font-size:17px;">✈️ Install Flight Link</strong>
+  <p id="installMessage" style="font-size:13px; margin:8px 0 12px;">Install Flight Link on your device for an app-like experience.</p>
+  <button id="installButton" style="background:#38a5ff; color:#07111f; border:0; padding:11px 18px; border-radius:9px; font-weight:bold; cursor:pointer;">Install app</button>
+  <button id="closeInstall" style="background:transparent; color:#b8c8d8; border:0; padding:9px; cursor:pointer;">Maybe later</button>
+</div>
+
+<script>
+let flightLinkInstallPrompt;
+
+const installBox = document.getElementById("installBox");
+const installButton = document.getElementById("installButton");
+const installMessage = document.getElementById("installMessage");
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  flightLinkInstallPrompt = event;
+  installBox.style.display = "block";
+});
+
+installButton.addEventListener("click", async () => {
+  if (flightLinkInstallPrompt) {
+    flightLinkInstallPrompt.prompt();
+    await flightLinkInstallPrompt.userChoice;
+    flightLinkInstallPrompt = null;
+    installBox.style.display = "none";
+  } else {
+    installMessage.textContent =
+      "Open your browser menu and choose Install Flight Link or Add to Home screen.";
+  }
+});
+
+document.getElementById("closeInstall").addEventListener("click", () => {
+  installBox.style.display = "none";
+});
+</script>
+
 </body>
 </html>
 
