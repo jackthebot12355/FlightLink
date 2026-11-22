@@ -1,5 +1,6 @@
 
 {
+  "id": "./",
   "name": "Flight Link",
   "short_name": "Flight Link",
   "description": "Your personal flight simulator companion.",
@@ -9,6 +10,7 @@
   "background_color": "#07111f",
   "theme_color": "#07111f",
   "orientation": "any",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./icon.png",
@@ -24,3 +26,4 @@
     }
   ]
 }
+
